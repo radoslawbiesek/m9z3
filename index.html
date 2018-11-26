@@ -14,14 +14,14 @@
         <div class="container">
             <!-- Title -->
             <header>
-                <h1 class="main-header">
-                    Paper, Rock, Scissor
-                </h1>
+                <h1 class="main-header">Paper, Rock, Scissors</h1>
+                <button id="newGameButton" type="button" class="btn btn-info btn-lg">New Game</button>
             </header>
             <!-- Result -->
             <section class="result">
                 <h2>Current result</h2>
                 <p><span id="playerResult">X</span> - <span id="computerResult">X</span></p>
+                <p id="roundsInfo">How many rounds do you want to play? Click 'New Game'.</p>
             </section>
             <!-- Last round -->
             <section class="round">
@@ -36,18 +36,19 @@
                         <p class="move" id="computerMove">?</p>
                     </div>
                 </div>
-                <p id="comment">Click the button to play!</p>
+                <p id="commentRound">First define the number of rounds.</p>
             </section>
             <!-- Next move -->
             <section class="move">
                 <h2>Your move:</h2>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button id="playPaper" type="button" class="btn btn-lg btn-outline-primary">Play Paper <i class="fas fa-hand-paper"></i></button>
-                    <button id="playRock" type="button" class="btn btn-lg btn-outline-danger">Play Rock <i class="fas fa-hand-rock"></i></button>
-                    <button id="playScissor" type="button" class="btn btn-lg btn-outline-success">Play Scissor <i class="fas fa-hand-scissors"></i></button>
+                <div class="btn-group" role="group">
+                    <button disabled id="playPaper" type="button" class="btn btn-lg btn-outline-primary">Play Paper <i class="fas fa-hand-paper"></i></button>
+                    <button disabled id="playRock" type="button" class="btn btn-lg btn-outline-danger">Play Rock <i class="fas fa-hand-rock"></i></button>
+                    <button disabled id="playScissors" type="button" class="btn btn-lg btn-outline-success">Play Scissors <i class="fas fa-hand-scissors"></i></button>
                 </div>
             </section>
         </div>
     </main>
+<script src="js/script.js"></script>
 </body>
 </html>

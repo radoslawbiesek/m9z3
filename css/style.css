@@ -1,24 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
-.game {
-  background-color: orange;
-  color: #ffffff;
-  font-family: 'Roboto Mono', monospace;
-  min-height: 100vh;
-  width: 100%;
-  text-align: center;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-      justify-content: center;
-  -ms-flex-align: center;
-      align-items: center;
-}
+.game { background-color: orange; color: #ffffff; font-family: 'Roboto Mono', monospace; min-height: 100vh; width: 100%; text-align: center; display: -ms-flexbox; display: flex; -ms-flex-pack: center; justify-content: center; -ms-flex-align: center; align-items: center; }
 
-.move {
-  font-size: 70px;
-}
+.move { font-size: 70px; }
 
-h2 {
-  margin-top: 70px;
-}
-/*# sourceMappingURL=style.css.map */
+h2 { margin-top: 70px; }
