@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Paper, Rock, Scissor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+    <main class="game">
+        <div class="container">
+            <!-- Title -->
+            <header>
+                <h1 class="main-header">
+                    Paper, Rock, Scissor
+                </h1>
+            </header>
+            <!-- Result -->
+            <section class="result">
+                <h2>Current result</h2>
+                <p><span id="playerResult">X</span> - <span id="computerResult">X</span></p>
+            </section>
+            <!-- Last round -->
+            <section class="round">
+                <h2>Round <span id="roundNumber">0</span></h2>
+                <div class="row">
+                    <div class="col">
+                        <h3>Player <i class="fas fa-user"></i></h3>
+                        <p class="move" id="playerMove">?</p>
+                    </div>
+                    <div class="col">
+                        <h3>Computer <i class="fas fa-robot"></i></h3>
+                        <p class="move" id="computerMove">?</p>
+                    </div>
+                </div>
+                <p id="comment">Click the button to play!</p>
+            </section>
+            <!-- Next move -->
+            <section class="move">
+                <h2>Your move:</h2>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button id="playPaper" type="button" class="btn btn-lg btn-outline-primary">Play Paper <i class="fas fa-hand-paper"></i></button>
+                    <button id="playRock" type="button" class="btn btn-lg btn-outline-danger">Play Rock <i class="fas fa-hand-rock"></i></button>
+                    <button id="playScissor" type="button" class="btn btn-lg btn-outline-success">Play Scissor <i class="fas fa-hand-scissors"></i></button>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
