@@ -107,7 +107,6 @@
                 disableButtons();
             }  
         }
-
     }
 
     var displayRoundNumber = function(round) {
