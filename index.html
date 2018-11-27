@@ -18,9 +18,9 @@
                 <button id="newGameButton" type="button" class="btn btn-info btn-lg">New Game</button>
             </header>
             <!-- Result -->
-            <section class="result">
+            <section>
                 <h2>Current result</h2>
-                <p><span id="playerResult">X</span> - <span id="computerResult">X</span></p>
+                <p class="results"><span id="playerResult">X</span> - <span id="computerResult">X</span></p>
                 <p id="roundsInfo">How many rounds do you want to play? Click 'New Game'.</p>
             </section>
             <!-- Last round -->
@@ -29,14 +29,16 @@
                 <div class="row">
                     <div class="col">
                         <h3>Player <i class="fas fa-user"></i></h3>
-                        <p class="move" id="playerMove">?</p>
+                        <p class="move" id="playerItem">?</p>
                     </div>
                     <div class="col">
                         <h3>Computer <i class="fas fa-robot"></i></h3>
-                        <p class="move" id="computerMove">?</p>
+                        <p class="move" id="computerItem">?</p>
                     </div>
                 </div>
-                <p id="commentRound">First define the number of rounds.</p>
+                <div class="form-group">
+                    <textarea class="form-control" id="gameLog" rows="3" readonly>First define the number of rounds.</textarea>
+                </div>
             </section>
             <!-- Next move -->
             <section class="move">
