@@ -1,5 +1,5 @@
 'use strict';
-// (function() {
+(function() {
 
     // New game button
     var newGameButton = document.getElementById('newGameButton');
@@ -39,7 +39,6 @@
         roundsToWin = askForInput();
         enableButtons();
         roundsInfo.innerHTML = 'You need to beat the computer ' + roundsToWin + ' times to win the whole game.';
-        addGameLog('New game. You play up to ' + roundsToWin + ' wins. Let\'s get started!');
 
         //Initialize or reset game variables
         playerResult = 0;
@@ -86,7 +85,7 @@
         var computerItem = randomMove();
         displayItem(playerItem, playerItemDiv);
         displayItem(computerItem, computerItemDiv);
-
+        
         var roundResult = compareItems(playerItem, computerItem);
         addGameLog('You played ' + playerItem + '. Computer played ' + computerItem + '. ' + roundResult);
 
@@ -188,4 +187,4 @@
     buttonPaper.addEventListener('click', function() { playerMove(paper) });
     buttonRock.addEventListener('click', function() { playerMove(rock) });
     buttonScissors.addEventListener('click', function() { playerMove(scissors) });
-// })(); 
+})(); 
