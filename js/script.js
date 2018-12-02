@@ -1,5 +1,5 @@
 'use strict';
-(function() {
+// (function() {
 
     // New game button
     var newGameButton = document.getElementById('newGameButton');
@@ -16,14 +16,16 @@
     var gameLogDiv = document.getElementById('gameLog');
 
     // Your move buttons
+    var playerMoveButtons = document.getElementsByClassName('player-move');
+
     var buttonPaper = document.getElementById('playPaper');
     var buttonScissors = document.getElementById('playScissors');
     var buttonRock = document.getElementById('playRock');
 
     // Variables
-    var rock = 'ROCK';
-    var scissors = 'SCISSORS';
-    var paper = 'PAPER';
+    var rock = 'rock';
+    var scissors = 'scissors';
+    var paper = 'paper';
 
     var win = 'You won!';
     var lost = 'You lost!';
@@ -71,15 +73,15 @@
 
 
     var enableButtons = function() {
-        buttonPaper.disabled = false;
-        buttonScissors.disabled = false;
-        buttonRock.disabled = false;
+        for (var i = 0; i < playerMoveButtons.length; i++) {
+            playerMoveButtons[i].disabled = false;
+        }
     };
 
     var disableButtons = function() {
-        buttonPaper.disabled = true;
-        buttonScissors.disabled = true;
-        buttonRock.disabled = true;
+        for (var i = 0; i < playerMoveButtons.length; i++) {
+            playerMoveButtons[i].disabled = true;
+        }
     };
 
     var playerMove = function(playerItem) {
@@ -91,7 +93,7 @@
         displayItem(computerItemDiv, computerItem);
 
         var roundResult = compareItems(playerItem, computerItem);
-        addGameLog('You played ' + playerItem + '. Computer played ' + computerItem + '. ' + roundResult);
+        addGameLog('You played ' + playerItem.toUpperCase() + '. Computer played ' + computerItem.toUpperCase() + '. ' + roundResult);
 
         if (roundResult == win) {
             playerResult++;
@@ -140,17 +142,17 @@
 
     var compareItems = function(item1, item2) {
         switch (item1 + '-' + item2) {
-            case 'SCISSORS-SCISSORS':
-            case 'PAPER-PAPER':
-            case 'ROCK-ROCK':
+            case 'scissors-scissors':
+            case 'paper-paper':
+            case 'rock-rock':
                 return draw;
-            case 'ROCK-PAPER':
-            case 'PAPER-SCISSORS':
-            case 'SCISSORS-ROCK':
+            case 'rock-paper':
+            case 'paper-scissors':
+            case 'scissors-rock':
                 return lost;
-            case 'ROCK-SCISSORS':
-            case 'PAPER-ROCK':
-            case 'SCISSORS-PAPER':
+            case 'rock-scissors':
+            case 'paper-rock':
+            case 'scissors-paper':
                 return win;
         }
     }
@@ -159,9 +161,13 @@
         return result >= roundsToWin;
     };
 
-    // Events listeners
+    // Event listener for new game
     newGameButton.addEventListener('click', newGame);
-    buttonPaper.addEventListener('click', function() { playerMove(paper) });
-    buttonRock.addEventListener('click', function() { playerMove(rock) });
-    buttonScissors.addEventListener('click', function() { playerMove(scissors) });
-})(); 
+    // Event listeners for player move buttons
+    for (var n = 0; n < playerMoveButtons.length; n++){
+        playerMoveButtons[n].addEventListener('click', function(){ 
+            playerMove(this.getAttribute('data-move'));
+        });
+    };
+
+// })(); 
