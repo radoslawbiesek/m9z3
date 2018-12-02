@@ -43,15 +43,15 @@
 
         //Initialize or reset game variables
         playerResult = 0;
-        displayPlayerResult(playerResult);
+        displayResult(playerResultDiv, playerResult);
         computerResult = 0;
-        displayComputerResult(computerResult);
+        displayResult(computerResultDiv, computerResult);
         round = 0;
         displayRoundNumber(round);
 
         // Reset layout
-        displayItem(undefined, computerItemDiv);
-        displayItem(undefined, playerItemDiv);
+        displayItem(computerItemDiv);
+        displayItem(playerItemDiv);
         gameLogDiv.innerHTML = 'New game. You play up to ' + roundsToWin + ' wins. Let\'s get started!';
     };
 
@@ -59,10 +59,17 @@
     var askForInput = function() {
         var userInput;
         do {    
-            userInput = window.prompt('How many rounds do you want to play? Please type an integer.');
-        } while (isNaN(parseInt(userInput,10)) || parseInt((userInput,10) < 1));
+            userInput = window.prompt('How many won rounds are needed to win the entire game? Please type an positive integer.');
+        } while (!isPositiveInteger(userInput));
         return userInput;
     };
+
+    // Helper that check if given input is a positive integer
+    var isPositiveInteger = function(userInput){
+        var x = parseInt(userInput);
+        return ((!isNaN(x) && String(x) === userInput && x > 1));
+    };
+
 
     var enableButtons = function() {
         buttonPaper.disabled = false;
@@ -76,23 +83,21 @@
         buttonRock.disabled = true;
     };
 
-    var playerMove = function(item) {
+    var playerMove = function(playerItem) {
         // Increase and display Round Number
-        round++;
-        displayRoundNumber(round);
+        displayRoundNumber(++round);
         
         //  Take player move and generate computer move. Display both
-        var playerItem = item;
         var computerItem = randomMove();
-        displayItem(playerItem, playerItemDiv);
-        displayItem(computerItem, computerItemDiv);
+        displayItem(playerItemDiv, playerItem);
+        displayItem(computerItemDiv, computerItem);
 
         var roundResult = compareItems(playerItem, computerItem);
         addGameLog('You played ' + playerItem + '. Computer played ' + computerItem + '. ' + roundResult);
 
         if (roundResult == win) {
             playerResult++;
-            displayPlayerResult(playerResult);
+            displayResult(playerResultDiv, playerResult);
             if (isGameEnded(playerResult)) {
                 addGameLog('Game is over. You won!');
                 roundsInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'New game\' to start another.';
@@ -100,7 +105,7 @@
             }
         } else if (roundResult == lost) {
             computerResult++;
-            displayComputerResult(computerResult);
+            displayResult(computerResultDiv, computerResult);
             if (isGameEnded(computerResult)) {
                 addGameLog('Game is over. You lost!');
                 roundsInfoDiv.innerHTML = 'You lost the game.<br>Click \'New game\' to start another.';
@@ -113,26 +118,16 @@
         roundNumberDiv.innerHTML = round;
     };
 
-    var displayPlayerResult = function(playerResult) {
-        playerResultDiv.innerHTML = playerResult;
+    var displayResult = function(place, result){
+        place.innerHTML = result;
     }
 
-    var displayComputerResult = function(computerResult) {
-        computerResultDiv.innerHTML = computerResult;
-    }
-
-    var displayItem = function(item, place) {
-        var toDisplay;
-        if (item == rock) {
-            toDisplay = '<i class="fas fa-hand-rock"></i>';
-        } else if (item == paper) {
-            toDisplay = '<i class="fas fa-hand-paper"></i>';
-        } else if (item == scissors) {
-            toDisplay = '<i class="fas fa-hand-scissors"></i>';
-        }   else {
-            toDisplay = '?';
+    var displayItem = function(place, item){
+        if (item != undefined){
+            place.innerHTML = '<i class="fas fa-hand-' + item.toLowerCase() + '"></i>';
+        } else {
+            place.innerHTML = '?';
         }
-        place.innerHTML = toDisplay;
     };
 
     var addGameLog = function(log) {
@@ -140,47 +135,30 @@
     }
 
     var randomMove = function(){
-        var i = Math.round((Math.random()*2)+1);
-        switch (i) {
-            case 1:
-                return rock;
-            case 2:
-                return paper;
-            case 3: 
-                return scissors;
-        }
+        var moves = [rock, paper, scissors];
+        var i = Math.round(Math.random()*2);
+        return moves[i];
     };
 
     var compareItems = function(item1, item2) {
-        var toCompare = item1 + item2;
-        switch (toCompare) {
-            case 'SCISSORSSCISSORS':
+        switch (item1 + '-' + item2) {
+            case 'SCISSORS-SCISSORS':
+            case 'PAPER-PAPER':
+            case 'ROCK-ROCK':
                 return draw;
-            case 'ROCKROCK':
-                return draw;
-            case 'PAPERPAPER':
-                return draw;
-            case 'ROCKPAPER':
+            case 'ROCK-PAPER':
+            case 'PAPER-SCISSORS':
+            case 'SCISSORS-ROCK':
                 return lost;
-            case 'ROCKSCISSORS':
+            case 'ROCK-SCISSORS':
+            case 'PAPER-ROCK':
+            case 'SCISSORS-PAPER':
                 return win;
-            case 'PAPERROCK':
-                return win;
-            case 'PAPERSCISSORS':
-                return lost;
-            case 'SCISSORSPAPER':
-                return win;
-            case 'SCISSORSROCK':
-                return lost;
         }
     }
 
     var isGameEnded = function(result) {
-        if (result >= roundsToWin) {
-            return true;
-        } else {
-            return false;
-        }
+        return result >= roundsToWin;
     };
 
     // Events listeners
