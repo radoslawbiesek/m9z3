@@ -86,7 +86,6 @@
     var playerMove = function(playerItem) {
         // Increase and display Round Number
         displayRoundNumber(++round);
-        
         //  Take player move and generate computer move. Display both
         var computerItem = randomMove();
         displayItem(playerItemDiv, playerItem);
