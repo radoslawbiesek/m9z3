@@ -14,13 +14,18 @@
     var playerItemDiv = document.getElementById('playerItem');
     var computerItemDiv = document.getElementById('computerItem');
     var gameLogDiv = document.getElementById('gameLog');
+    var playerNameDiv = document.getElementById('playerName');
 
     // Your move buttons
     var playerMoveButtons = document.getElementsByClassName('player-move');
 
-    var buttonPaper = document.getElementById('playPaper');
-    var buttonScissors = document.getElementById('playScissors');
-    var buttonRock = document.getElementById('playRock');
+    // Modals
+    var modals = document.querySelectorAll('.modal');
+    var closeButtons = document.querySelectorAll('.modal .close');
+    var endGameInfoDiv = document.getElementById('endGameInfo');
+    var playAgainButton = document.getElementById('playAgain');
+
+    var modalGameEnded = document.getElementById('modal-game-ended');
 
     // Variables
     var rock = 'rock';
@@ -31,46 +36,53 @@
     var lost = 'You lost!';
     var draw = 'There is a draw.';
 
-    var playerResult;
-    var computerResult;
-    var round; 
-    var roundsToWin;
+    // Create new object for parameters of the game
+    var parameters = {
+        playerName: 'Player',
+        roundsToWin: undefined,
+        round: 0,
+        playerResult: 0,
+        computerResult: 0,
+    };
+    var progress = []
 
     // Start new game
     var newGame = function() {
-        roundsToWin = askForInput();
+        parameters.roundsToWin = askForInput();
         enableButtons();
-        roundsInfo.innerHTML = 'You need to beat the computer ' + roundsToWin + ' times to win the whole game.';
+        roundsInfoDiv.innerHTML = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
 
         //Initialize or reset game variables
-        playerResult = 0;
-        displayResult(playerResultDiv, playerResult);
-        computerResult = 0;
-        displayResult(computerResultDiv, computerResult);
-        round = 0;
-        displayRoundNumber(round);
+        parameters.playerResult = 0;
+        displayResult(playerResultDiv, parameters.playerResult);
+        parameters.computerResult = 0;
+        displayResult(computerResultDiv, parameters.computerResult);
+        parameters.round = 0;
+        displayRoundNumber(parameters.round);
 
         // Reset layout
         displayItem(computerItemDiv);
         displayItem(playerItemDiv);
-        gameLogDiv.innerHTML = 'New game. You play up to ' + roundsToWin + ' wins. Let\'s get started!';
+        gameLogDiv.innerHTML = 'New game. You play up to ' + parameters.roundsToWin + ' wins. Let\'s get started!';
     };
 
-    // Ask user for number of rounds
+    // Ask user for number of parameters.rounds
     var askForInput = function() {
         var userInput;
         do {    
             userInput = window.prompt('How many won rounds are needed to win the entire game? Please type an positive integer.');
+            // if (userInput === null) {
+            //     gdy wcisniety zostanie cancel zatrzymaj petle do-while, zatrzymaj f-cje askForInput, zatrzymaj funkcje newGame
+            // }
         } while (!isPositiveInteger(userInput));
-        return userInput;
+        return parseInt(userInput);
     };
 
     // Helper that check if given input is a positive integer
     var isPositiveInteger = function(userInput){
         var x = parseInt(userInput);
-        return ((!isNaN(x) && String(x) === userInput && x > 1));
+        return ((!isNaN(x) && String(x) === userInput && x > 0));
     };
-
 
     var enableButtons = function() {
         for (var i = 0; i < playerMoveButtons.length; i++) {
@@ -85,8 +97,8 @@
     };
 
     var playerMove = function(playerItem) {
-        // Increase and display Round Number
-        displayRoundNumber(++round);
+        // Increase and display parameters.Round Number
+        displayRoundNumber(++parameters.round);
         //  Take player move and generate computer move. Display both
         var computerItem = randomMove();
         displayItem(playerItemDiv, playerItem);
@@ -96,22 +108,27 @@
         addGameLog('You played ' + playerItem.toUpperCase() + '. Computer played ' + computerItem.toUpperCase() + '. ' + roundResult);
 
         if (roundResult == win) {
-            playerResult++;
-            displayResult(playerResultDiv, playerResult);
-            if (isGameEnded(playerResult)) {
+            parameters.playerResult++;
+            displayResult(playerResultDiv, parameters.playerResult);
+            if (isGameEnded(parameters.playerResult)) {
                 addGameLog('Game is over. You won!');
-                roundsInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'New game\' to start another.';
+                endGameInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'Play again\' to start another.';
+                showModal(modalGameEnded);
                 disableButtons();
             }
         } else if (roundResult == lost) {
-            computerResult++;
-            displayResult(computerResultDiv, computerResult);
-            if (isGameEnded(computerResult)) {
+            parameters.computerResult++;
+            displayResult(computerResultDiv, parameters.computerResult);
+            if (isGameEnded(parameters.computerResult)) {
                 addGameLog('Game is over. You lost!');
-                roundsInfoDiv.innerHTML = 'You lost the game.<br>Click \'New game\' to start another.';
+                endGameInfoDiv.innerHTML = 'You lost the game.<br>Click \'Play again\' to start another.';
+                showModal(modalGameEnded);
                 disableButtons();
-            }  
+            }
         }
+        var temp = parameters;
+        progress.push(temp);
+        console.log(progress);
     }
 
     var displayRoundNumber = function(round) {
@@ -158,9 +175,32 @@
     }
 
     var isGameEnded = function(result) {
-        return result >= roundsToWin;
+        return result >= parameters.roundsToWin;
     };
 
+     // Delete 'show' class from all modals
+     var hideAll = function(){
+        for(var i = 0; i < modals.length; i++){
+            modals[i].classList.remove('show');
+        }
+        document.querySelector('#modal-overlay').classList.remove('show');
+    }
+    
+    // Function that hides overlay after clicking the button or overlay
+    var hideModal = function(event){
+		event.preventDefault();
+		document.querySelector('#modal-overlay').classList.remove('show');
+	};
+    
+    // Show modal
+    var showModal = function(modal){
+        hideAll();
+        modal.classList.add('show');
+        document.querySelector('#modal-overlay').classList.add('show');
+    };    
+    
+
+    // EVENT LISTENERS
     // Event listener for new game
     newGameButton.addEventListener('click', newGame);
     // Event listeners for player move buttons
@@ -169,5 +209,20 @@
             playerMove(this.getAttribute('data-move'));
         });
     };
+    // Event listener for play again
+    playAgainButton.addEventListener('click', function(){
+        hideAll();
+        newGame();
+    });
+    // Event listeners for hiding modals
+    for(var i = 0; i < closeButtons.length; i++){
+		closeButtons[i].addEventListener('click', hideModal);
+    }
+    document.querySelector('#modal-overlay').addEventListener('click', hideModal);
 
+    for(var i = 0; i < modals.length; i++){
+		modals[i].addEventListener('click', function(event){
+			event.stopPropagation();
+		});
+    }
 // })(); 
