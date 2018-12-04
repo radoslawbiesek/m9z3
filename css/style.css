@@ -42,8 +42,7 @@ h2 {
   display: none;
   background: #fff;
   width: 70%;
-  max-width: 600px;
-  min-height: 250px;
+  max-width: 800px;
   padding: 30px;
   position: absolute;
   top: 50%;
@@ -77,5 +76,13 @@ h2 {
 
 .show {
   display: block;
+}
+
+table {
+  margin: 20px auto 0 auto;
+}
+
+.scroll {
+  overflow: scroll;
 }
 /*# sourceMappingURL=style.css.map */

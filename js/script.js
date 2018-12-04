@@ -24,43 +24,52 @@
     var closeButtons = document.querySelectorAll('.modal .close');
     var endGameInfoDiv = document.getElementById('endGameInfo');
     var playAgainButton = document.getElementById('playAgain');
-
     var modalGameEnded = document.getElementById('modal-game-ended');
+    var tableBodyDiv = document.getElementById('table-body');
 
     // Variables
     var rock = 'rock';
     var scissors = 'scissors';
     var paper = 'paper';
 
-    var win = 'You won!';
-    var lost = 'You lost!';
-    var draw = 'There is a draw.';
+    var win = 'win';
+    var lost = 'lost';
+    var draw = 'draw';
 
     // Create new object for parameters of the game
     var parameters = {
         playerName: 'Player',
         roundsToWin: undefined,
-        round: 0,
-        playerResult: 0,
-        computerResult: 0,
+        progress: [],
+        // Temporary state of the game
+        gameState: { // add in newGame
+            // round
+            // playerItem
+            // computerItem
+            // playerResult
+            // computerResult
+            // roundResult
+        }
     };
-    var progress = []
 
     // Start new game
     var newGame = function() {
         parameters.roundsToWin = askForInput();
         enableButtons();
-        roundsInfoDiv.innerHTML = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
+        roundsInfoDiv.innerText = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
 
-        //Initialize or reset game variables
-        parameters.playerResult = 0;
-        displayResult(playerResultDiv, parameters.playerResult);
-        parameters.computerResult = 0;
-        displayResult(computerResultDiv, parameters.computerResult);
-        parameters.round = 0;
-        displayRoundNumber(parameters.round);
+        // Initialize or reset game variables
+        parameters.gameState.round = 0;  
+        parameters.gameState.playerItem = undefined;  
+        parameters.gameState.computerItem = undefined;
+        parameters.gameState.playerResult = 0;
+        parameters.gameState.computerResult = 0;
+        parameters.gameState.roundResult = undefined;
 
         // Reset layout
+        displayResult(playerResultDiv, parameters.gameState.playerResult);
+        displayResult(computerResultDiv, parameters.gameState.computerResult);
+        displayRoundNumber(parameters.gameState.round);
         displayItem(computerItemDiv);
         displayItem(playerItemDiv);
         gameLogDiv.innerHTML = 'New game. You play up to ' + parameters.roundsToWin + ' wins. Let\'s get started!';
@@ -71,9 +80,6 @@
         var userInput;
         do {    
             userInput = window.prompt('How many won rounds are needed to win the entire game? Please type an positive integer.');
-            // if (userInput === null) {
-            //     gdy wcisniety zostanie cancel zatrzymaj petle do-while, zatrzymaj f-cje askForInput, zatrzymaj funkcje newGame
-            // }
         } while (!isPositiveInteger(userInput));
         return parseInt(userInput);
     };
@@ -96,40 +102,46 @@
         }
     };
 
-    var playerMove = function(playerItem) {
+    var playerMove = function(item) {
         // Increase and display parameters.Round Number
-        displayRoundNumber(++parameters.round);
+        displayRoundNumber(++parameters.gameState.round);
         //  Take player move and generate computer move. Display both
-        var computerItem = randomMove();
-        displayItem(playerItemDiv, playerItem);
-        displayItem(computerItemDiv, computerItem);
+        parameters.gameState.playerItem = item;
+        parameters.gameState.computerItem = randomMove();
+        displayItem(playerItemDiv, parameters.gameState.playerItem);
+        displayItem(computerItemDiv, parameters.gameState.computerItem);
 
-        var roundResult = compareItems(playerItem, computerItem);
-        addGameLog('You played ' + playerItem.toUpperCase() + '. Computer played ' + computerItem.toUpperCase() + '. ' + roundResult);
+        parameters.gameState.roundResult = compareItems(parameters.gameState.playerItem, parameters.gameState.computerItem);
+        addGameLog('You played ' + parameters.gameState.playerItem.toUpperCase() + '. Computer played ' + parameters.gameState.computerItem.toUpperCase() + '. ' + commentRoundResult(parameters.gameState.roundResult));
 
-        if (roundResult == win) {
-            parameters.playerResult++;
-            displayResult(playerResultDiv, parameters.playerResult);
-            if (isGameEnded(parameters.playerResult)) {
+        if (parameters.gameState.roundResult == win) {
+            parameters.gameState.playerResult++;
+            displayResult(playerResultDiv, parameters.gameState.playerResult);
+            if (isGameEnded(parameters.gameState.playerResult)) {
                 addGameLog('Game is over. You won!');
                 endGameInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'Play again\' to start another.';
                 showModal(modalGameEnded);
                 disableButtons();
             }
-        } else if (roundResult == lost) {
-            parameters.computerResult++;
-            displayResult(computerResultDiv, parameters.computerResult);
-            if (isGameEnded(parameters.computerResult)) {
+        } else if (parameters.gameState.roundResult == lost) {
+            parameters.gameState.computerResult++;
+            displayResult(computerResultDiv, parameters.gameState.computerResult);
+            if (isGameEnded(parameters.gameState.computerResult)) {
                 addGameLog('Game is over. You lost!');
                 endGameInfoDiv.innerHTML = 'You lost the game.<br>Click \'Play again\' to start another.';
                 showModal(modalGameEnded);
                 disableButtons();
             }
         }
-        var temp = parameters;
-        progress.push(temp);
-        console.log(progress);
+
+        // Append current state of the game to the progress array
+        appendParamsToProgress();
     }
+
+    function appendParamsToProgress() {
+        var temp = Object.assign({}, parameters.gameState);
+        parameters.progress.push(temp);
+    };
 
     var displayRoundNumber = function(round) {
         roundNumberDiv.innerHTML = round;
@@ -174,6 +186,19 @@
         }
     }
 
+    var commentRoundResult = function(result) {
+        switch (result) {
+            case win:
+                return 'You won!';
+            case lost:
+                return 'You lost.';
+            case draw:
+                return 'There is a draw.';
+            default:
+                return '';
+        }    
+    }
+
     var isGameEnded = function(result) {
         return result >= parameters.roundsToWin;
     };
@@ -197,8 +222,22 @@
         hideAll();
         modal.classList.add('show');
         document.querySelector('#modal-overlay').classList.add('show');
+        createTable(parameters.progress);
     };    
     
+    var createTable = function(data) {
+        tableBodyDiv.innerHTML = ''; // reset table
+        for (var i = 0; i < data.length; i++) {
+            tableBodyDiv.innerHTML +=
+                '<tr>' +
+                    '<td>' + data[i].round + '</td>' +
+                    '<td><i class="fas fa-hand-' + data[i].playerItem.toLowerCase() + '"></i></td>' +
+                    '<td><i class="fas fa-hand-' + data[i].computerItem.toLowerCase() + '"></i></td>' +
+                    '<td>' + data[i].roundResult.slice(0,1).toUpperCase() + '</td>' +
+                    '<td>' + data[i].playerResult + ' - ' + data[i].computerResult + '</td>' +
+                '</tr>';
+        }
+    };
 
     // EVENT LISTENERS
     // Event listener for new game
