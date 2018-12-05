@@ -1,5 +1,5 @@
 'use strict';
-// (function() {
+(function() {
 
     // New game button
     var newGameButton = document.getElementById('newGameButton');
@@ -14,18 +14,24 @@
     var playerItemDiv = document.getElementById('playerItem');
     var computerItemDiv = document.getElementById('computerItem');
     var gameLogDiv = document.getElementById('gameLog');
-    var playerNameDiv = document.getElementById('playerName');
+    var playerNameDiv = document.getElementById('playerNameDiv');
 
     // Your move buttons
     var playerMoveButtons = document.getElementsByClassName('player-move');
 
     // Modals
     var modals = document.querySelectorAll('.modal');
+
     var closeButtons = document.querySelectorAll('.modal .close');
     var endGameInfoDiv = document.getElementById('endGameInfo');
     var playAgainButton = document.getElementById('playAgain');
     var modalGameEnded = document.getElementById('modal-game-ended');
     var tableBodyDiv = document.getElementById('table-body');
+
+    var modalInput = document.getElementById('modal-input');
+    var submitButton = document.getElementById('submitButton');
+    var playerNameInput = document.getElementById('playerNameInput');
+    var roundsToWinInput = document.getElementById('roundsToWinInput');
 
     // Variables
     var rock = 'rock';
@@ -54,10 +60,6 @@
 
     // Start new game
     var newGame = function() {
-        parameters.roundsToWin = askForInput();
-        enableButtons();
-        roundsInfoDiv.innerText = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
-
         // Initialize or reset game variables
         parameters.gameState.round = 0;  
         parameters.gameState.playerItem = undefined;  
@@ -73,23 +75,24 @@
         displayRoundNumber(parameters.gameState.round);
         displayItem(computerItemDiv);
         displayItem(playerItemDiv);
+        
+        debugger;
+    };
+
+    // Submit
+    var submitUserInput = function() {
+        parameters.playerName = playerNameInput.value;
+        parameters.roundsToWin = parseInt(roundsToWinInput.value);
         gameLogDiv.innerHTML = 'New game. You play up to ' + parameters.roundsToWin + ' wins. Let\'s get started!';
+        roundsInfoDiv.innerText = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
+        playerNameDiv.innerText = parameters.playerName;
+        debugger;
     };
 
-    // Ask user for number of parameters.rounds
-    var askForInput = function() {
-        var userInput;
-        do {    
-            userInput = window.prompt('How many won rounds are needed to win the entire game? Please type an positive integer.');
-        } while (!isPositiveInteger(userInput));
-        return parseInt(userInput);
-    };
-
-    // Helper that check if given input is a positive integer
-    var isPositiveInteger = function(userInput){
-        var x = parseInt(userInput);
-        return ((!isNaN(x) && String(x) === userInput && x > 0));
-    };
+    // var isPositiveInteger = function(userInput){
+    //     var x = parseInt(userInput);
+    //     return ((!isNaN(x) && String(x) === userInput && x > 0));
+    // };
 
     var enableButtons = function() {
         for (var i = 0; i < playerMoveButtons.length; i++) {
@@ -113,7 +116,7 @@
         displayItem(computerItemDiv, parameters.gameState.computerItem);
 
         parameters.gameState.roundResult = compareItems(parameters.gameState.playerItem, parameters.gameState.computerItem);
-        addGameLog('You played ' + parameters.gameState.playerItem.toUpperCase() + '. Computer played ' + parameters.gameState.computerItem.toUpperCase() + '. ' + commentRoundResult(parameters.gameState.roundResult));
+        addGameLog(parameters.playerName + ' played ' + parameters.gameState.playerItem.toUpperCase() + '. Computer played ' + parameters.gameState.computerItem.toUpperCase() + '. ' + commentRoundResult(parameters.gameState.roundResult));
 
         if (parameters.gameState.roundResult == win) {
             parameters.gameState.playerResult++;
@@ -134,7 +137,6 @@
                 disableButtons();
             }
         }
-
         // Append current state of the game to the progress array
         appendParamsToProgress();
     }
@@ -242,7 +244,9 @@
 
     // EVENT LISTENERS
     // Event listener for new game
-    newGameButton.addEventListener('click', newGame);
+    newGameButton.addEventListener('click', function() {
+        showModal(modalInput);
+    });
     // Event listeners for player move buttons
     for (var n = 0; n < playerMoveButtons.length; n++){
         playerMoveButtons[n].addEventListener('click', function(){ 
@@ -265,4 +269,15 @@
 			event.stopPropagation();
 		});
     }
-// })(); 
+    // Event listener for submit user input
+    submitButton.addEventListener('click', function(){
+        newGame();
+        submitUserInput();
+        debugger;
+        hideAll();
+        debugger;
+        enableButtons();
+        debugger;   
+    });
+
+})(); 
