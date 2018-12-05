@@ -65,6 +65,7 @@
         parameters.gameState.playerResult = 0;
         parameters.gameState.computerResult = 0;
         parameters.gameState.roundResult = undefined;
+        parameters.progress = [];
 
         // Reset layout
         displayResult(playerResultDiv, parameters.gameState.playerResult);

@@ -83,6 +83,7 @@ table {
 }
 
 .scroll {
-  overflow: scroll;
+  overflow: auto;
+  height: 280px;
 }
 /*# sourceMappingURL=style.css.map */
