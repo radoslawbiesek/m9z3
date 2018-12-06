@@ -271,6 +271,7 @@
     }
     // Event listener for submit user input
     submitButton.addEventListener('click', function(){
+        event.preventDefault();
         newGame();
         submitUserInput();
         debugger;
