@@ -1,5 +1,5 @@
 'use strict';
-// (function() {
+(function() {
 
     // New game button
     var newGameButton = document.getElementById('new-game-button');
@@ -300,4 +300,4 @@
 		});
     }
 
-// })(); 
+})(); 
