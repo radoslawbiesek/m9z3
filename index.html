@@ -15,51 +15,53 @@
             <!-- Title -->
             <header>
                 <h1 class="main-header">Rock, Paper, Scissors</h1>
-                <button id="newGameButton" type="button" class="btn btn-info btn-lg">New Game</button>
+                <button id="new-game-button" type="button" class="btn btn-info btn-lg">New Game</button>
             </header>
             <!-- Result -->
             <section>
                 <h2>Current result</h2>
-                <p class="results"><span id="playerResult">X</span> - <span id="computerResult">X</span></p>
-                <p id="roundsInfo">How many rounds do you want to play? Click 'New Game'.</p>
+                <p class="results"><span id="player-result">X</span> - <span id="computer-result">X</span></p>
+                <p id="rounds-info">How many rounds do you want to play? Click 'New Game'.</p>
             </section>
             <!-- Last round -->
             <section class="round">
-                <h2>Round <span id="roundNumber">0</span></h2>
-                <div class="row">
+                <h2>Round <span id="round-number">0</span></h2>
+                <div class="row justify-content-center">
                     <div class="col">
-                        <h3><span id="playerNameDiv">Player </span> <i class="fas fa-user"></i></h3>
-                        <p class="move" id="playerItem">?</p>
+                        <h3><span id="player-name">Player </span> <i class="fas fa-user"></i></h3>
+                        <p class="move" id="player-item">?</p>
                     </div>
                     <div class="col">
                         <h3>Computer <i class="fas fa-robot"></i></h3>
-                        <p class="move" id="computerItem">?</p>
+                        <p class="move" id="computer-item">?</p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <textarea class="form-control" id="gameLog" rows="3" readonly>First define the number of rounds.</textarea>
-                </div>
             </section>
+            <!-- Log -->
+            <section class="log">
+                <div class="form-group">
+                    <textarea class="form-control" id="game-log" rows="3" readonly>First define the number of rounds.</textarea>
+                </div>
+            </section>            
             <!-- Next move -->
             <section class="move">
                 <h2>Your move:</h2>
-                <div class="btn-group" role="group">
-                    <button disabled id="playRock" data-move="rock" type="button" class="player-move btn btn-lg btn-outline-danger">Play Rock <i class="fas fa-hand-rock"></i></button>
-                    <button disabled id="playPaper" data-move="paper" type="button" class="player-move btn btn-lg btn-outline-primary">Play Paper <i class="fas fa-hand-paper"></i></button>
-                    <button disabled id="playScissors" data-move="scissors" type="button" class="player-move btn btn-lg btn-outline-success">Play Scissors <i class="fas fa-hand-scissors"></i></button>
+                <div class="btn-group-vertical" role="group">
+                    <button disabled id="play-rock" data-move="rock" type="button" class="player-move btn btn-lg btn-outline-danger">Play Rock <i class="fas fa-hand-rock"></i></button>
+                    <button disabled id="play-raper" data-move="paper" type="button" class="player-move btn btn-lg btn-outline-primary">Play Paper <i class="fas fa-hand-paper"></i></button>
+                    <button disabled id="play-scissors" data-move="scissors" type="button" class="player-move btn btn-lg btn-outline-success">Play Scissors <i class="fas fa-hand-scissors"></i></button>
                 </div>
             </section>
 
             <!-- MODALS -->
             <!-- Modal 1 - End of the game -->
             <div class="overlay" id="modal-overlay">
-                <div class="modal" id="modal-game-ended">
+                <div class="modal scroll" id="modal-game-ended">
                     <a href="#" class="close">X</a>
                     <header>Game ended</header>
                     <div class="content">
-                        <p id="endGameInfo">Info about game result.</p>
-                        <button id="playAgain" type="button" class="btn btn-info btn-lg">Play again</button>
-                        <div class="scroll">
+                        <p id="end-game-info">Info about game result.</p>
+                        <button id="play-again-button" type="button" class="btn btn-info btn-lg">Play again</button>
                             <table id="table" class="table table-striped">
                                 <thead class="thead-dark">
                                     <tr>
@@ -73,23 +75,23 @@
                                 <tbody id="table-body">
                                 </tbody>
                             </table>
-                        </div>
                     </div>
                 </div>
+                <!-- Modal 2 - New game input -->
                 <div class="modal" id="modal-input">
                     <a href="#" class="close">X</a>
                     <header>New Game</header>
                     <div class="content">
                         <form>
                             <div class="form-group">
-                            <label for="playerNameInput">Name:</label>
-                            <input type="text" class="form-control" id="playerNameInput" placeholder="Player name">
+                            <label for="player-name-input">Name:</label>
+                            <input type="text" class="form-control" id="player-name-input" placeholder="Player name" autofocus>
                             </div>
                             <div class="form-group">
-                            <label for="exampleInputPassword1">How many won rounds are needed to win the entire game? Please type an positive integer.</label>
-                            <input type="number" class="form-control" id="roundsToWinInput" placeholder="Number of rounds">
+                            <label for="example-input-password1">How many won rounds are needed to win the entire game? Please type an positive integer.</label>
+                            <input type="number" class="form-control" id="rounds-to-win-input" placeholder="Number of rounds">
                             </div>
-                            <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+                            <button id="submit-button" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 </div>

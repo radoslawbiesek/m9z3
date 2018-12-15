@@ -1,42 +1,45 @@
 'use strict';
-(function() {
+// (function() {
 
     // New game button
-    var newGameButton = document.getElementById('newGameButton');
+    var newGameButton = document.getElementById('new-game-button');
 
     // Current result
-    var playerResultDiv = document.getElementById('playerResult');
-    var computerResultDiv = document.getElementById('computerResult');
-    var roundsInfoDiv = document.getElementById('roundsInfo');
+    var playerResultDiv = document.getElementById('player-result');
+    var computerResultDiv = document.getElementById('computer-result');
+    var roundsInfoDiv = document.getElementById('rounds-info');
 
     //  Round X
-    var roundNumberDiv = document.getElementById('roundNumber');
-    var playerItemDiv = document.getElementById('playerItem');
-    var computerItemDiv = document.getElementById('computerItem');
-    var gameLogDiv = document.getElementById('gameLog');
-    var playerNameDiv = document.getElementById('playerNameDiv');
+    var roundNumberDiv = document.getElementById('round-number');
+    var playerItemDiv = document.getElementById('player-item');
+    var computerItemDiv = document.getElementById('computer-item');
+    var gameLogDiv = document.getElementById('game-log');
+    var playerNameDiv = document.getElementById('player-name');
 
     // Your move buttons
     var playerMoveButtons = document.getElementsByClassName('player-move');
 
     // Modals
     var modals = document.querySelectorAll('.modal');
+    var modalOverlay = document.getElementById('modal-overlay');
 
     var closeButtons = document.querySelectorAll('.modal .close');
-    var endGameInfoDiv = document.getElementById('endGameInfo');
-    var playAgainButton = document.getElementById('playAgain');
+    var endGameInfoDiv = document.getElementById('end-game-info');
+    var playAgainButton = document.getElementById('play-again-button');
     var modalGameEnded = document.getElementById('modal-game-ended');
     var tableBodyDiv = document.getElementById('table-body');
 
     var modalInput = document.getElementById('modal-input');
-    var submitButton = document.getElementById('submitButton');
-    var playerNameInput = document.getElementById('playerNameInput');
-    var roundsToWinInput = document.getElementById('roundsToWinInput');
+    var submitButton = document.getElementById('submit-button');
+    var playerNameInput = document.getElementById('player-name-input');
+    var roundsToWinInput = document.getElementById('rounds-to-win-input');
 
     // Variables
-    var rock = 'rock';
-    var scissors = 'scissors';
-    var paper = 'paper';
+    var moves = {
+        rock: 'rock',
+        scissors: 'scissors',
+        paper: 'paper',
+    };
 
     var win = 'win';
     var lost = 'lost';
@@ -45,68 +48,61 @@
     // Create new object for parameters of the game
     var parameters = {
         playerName: 'Player',
-        roundsToWin: undefined,
+        roundsToWin: null,
         progress: [],
-        // Temporary state of the game
-        gameState: { // add in newGame
-            // round
-            // playerItem
-            // computerItem
-            // playerResult
-            // computerResult
-            // roundResult
-        }
+        gameState: {}, // add in resetParameters
     };
 
     // Start new game
-    var newGame = function() {
-        // Initialize or reset game variables
+    function newGame() {
+        resetParameters();
+        resetLayout();
+    };
+
+    // Initialize or reset game variables
+    function resetParameters() {
         parameters.gameState.round = 0;  
-        parameters.gameState.playerItem = undefined;  
-        parameters.gameState.computerItem = undefined;
+        parameters.gameState.playerItem = null;  
+        parameters.gameState.computerItem = null;
         parameters.gameState.playerResult = 0;
         parameters.gameState.computerResult = 0;
-        parameters.gameState.roundResult = undefined;
+        parameters.gameState.roundResult = null;
         parameters.progress = [];
+    }
 
-        // Reset layout
+    // Reset layout
+    function resetLayout() {
         displayResult(playerResultDiv, parameters.gameState.playerResult);
         displayResult(computerResultDiv, parameters.gameState.computerResult);
         displayRoundNumber(parameters.gameState.round);
         displayItem(computerItemDiv);
-        displayItem(playerItemDiv);
-        
-        debugger;
-    };
+        displayItem(playerItemDiv); 
+    }
 
     // Submit
-    var submitUserInput = function() {
+    function submitUserInput() {
         parameters.playerName = playerNameInput.value;
         parameters.roundsToWin = parseInt(roundsToWinInput.value);
         gameLogDiv.innerHTML = 'New game. You play up to ' + parameters.roundsToWin + ' wins. Let\'s get started!';
         roundsInfoDiv.innerText = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
         playerNameDiv.innerText = parameters.playerName;
-        debugger;
     };
 
-    // var isPositiveInteger = function(userInput){
-    //     var x = parseInt(userInput);
-    //     return ((!isNaN(x) && String(x) === userInput && x > 0));
-    // };
-
-    var enableButtons = function() {
-        for (var i = 0; i < playerMoveButtons.length; i++) {
+    function enableButtons() {
+        var playerMoveButtonsLength = playerMoveButtons.length;
+        for (var i = 0; i < playerMoveButtonsLength; i++) {
             playerMoveButtons[i].disabled = false;
         }
     };
 
-    var disableButtons = function() {
-        for (var i = 0; i < playerMoveButtons.length; i++) {
+    function disableButtons() {
+        var playerMoveButtonsLength = playerMoveButtons.length;
+        for (var i = 0; i < playerMoveButtonsLength; i++) {
             playerMoveButtons[i].disabled = true;
         }
     };
 
-    var playerMove = function(item) {
+    function playerMove(item) {
         // Increase and display parameters.Round Number
         displayRoundNumber(++parameters.gameState.round);
         //  Take player move and generate computer move. Display both
@@ -120,59 +116,72 @@
 
         if (parameters.gameState.roundResult == win) {
             parameters.gameState.playerResult++;
+            appendParamsToProgress();
             displayResult(playerResultDiv, parameters.gameState.playerResult);
             if (isGameEnded(parameters.gameState.playerResult)) {
-                addGameLog('Game is over. You won!');
-                endGameInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'Play again\' to start another.';
-                showModal(modalGameEnded);
-                disableButtons();
+                endGame(parameters.playerName);              
             }
         } else if (parameters.gameState.roundResult == lost) {
             parameters.gameState.computerResult++;
+            appendParamsToProgress();
             displayResult(computerResultDiv, parameters.gameState.computerResult);
             if (isGameEnded(parameters.gameState.computerResult)) {
-                addGameLog('Game is over. You lost!');
-                endGameInfoDiv.innerHTML = 'You lost the game.<br>Click \'Play again\' to start another.';
-                showModal(modalGameEnded);
-                disableButtons();
+                endGame('Computer');
             }
+        }       
+    };
+
+    function endGame(winner) {
+        if (winner == parameters.playerName) {
+            addGameLog('Game is over. You won!');
+            endGameInfoDiv.innerHTML = 'YOU WON THE ENTIRE GAME!!!!1111<br>Click \'Play again\' to start another.';
+        } else {
+            addGameLog('Game is over. You lost!');
+            endGameInfoDiv.innerHTML = 'You lost the game.<br>Click \'Play again\' to start another.';
         }
-        // Append current state of the game to the progress array
-        appendParamsToProgress();
-    }
+        createTable(parameters.progress);
+        showModal(modalGameEnded);
+        disableButtons();
+    };
 
     function appendParamsToProgress() {
         var temp = Object.assign({}, parameters.gameState);
         parameters.progress.push(temp);
     };
 
-    var displayRoundNumber = function(round) {
+    function displayRoundNumber(round) {
         roundNumberDiv.innerHTML = round;
     };
 
-    var displayResult = function(place, result){
+    function displayResult(place, result) {
         place.innerHTML = result;
     }
 
-    var displayItem = function(place, item){
-        if (item != undefined){
-            place.innerHTML = '<i class="fas fa-hand-' + item.toLowerCase() + '"></i>';
+    function displayItem(place, item){
+        if (item != null){
+            place.innerHTML = drawIcon(item);
         } else {
             place.innerHTML = '?';
         }
     };
 
-    var addGameLog = function(log) {
+    // Use string of the item to create font awesome icon
+    function drawIcon(item) {
+        return '<i class="fas fa-hand-' + item.toLowerCase() + '"></i>';
+    }
+
+    function addGameLog(log) {
         gameLogDiv.insertAdjacentHTML("afterbegin", log + '&#13;&#10;');
     }
 
-    var randomMove = function(){
-        var moves = [rock, paper, scissors];
-        var i = Math.round(Math.random()*2);
-        return moves[i];
+    function randomMove(){
+        var movesAvalaible = Object.keys(moves);
+        var movesNumber = movesAvalaible.length;
+        var i = Math.round(Math.random()* (movesNumber - 1));
+        return movesAvalaible[i];
     };
 
-    var compareItems = function(item1, item2) {
+    function compareItems(item1, item2) {
         switch (item1 + '-' + item2) {
             case 'scissors-scissors':
             case 'paper-paper':
@@ -186,10 +195,12 @@
             case 'paper-rock':
             case 'scissors-paper':
                 return win;
+            default:
+                return null;
         }
     }
 
-    var commentRoundResult = function(result) {
+    function commentRoundResult(result) {
         switch (result) {
             case win:
                 return 'You won!';
@@ -202,51 +213,69 @@
         }    
     }
 
-    var isGameEnded = function(result) {
+    function isGameEnded(result) {
         return result >= parameters.roundsToWin;
     };
-
-     // Delete 'show' class from all modals
-     var hideAll = function(){
-        for(var i = 0; i < modals.length; i++){
-            modals[i].classList.remove('show');
-        }
-        document.querySelector('#modal-overlay').classList.remove('show');
-    }
-    
-    // Function that hides overlay after clicking the button or overlay
-    var hideModal = function(event){
-		event.preventDefault();
-		document.querySelector('#modal-overlay').classList.remove('show');
-	};
     
     // Show modal
-    var showModal = function(modal){
-        hideAll();
+    function showModal(modal) {
+        hideAllModals();
         modal.classList.add('show');
-        document.querySelector('#modal-overlay').classList.add('show');
-        createTable(parameters.progress);
-    };    
+        modalOverlay.classList.add('show');    
+    };   
     
-    var createTable = function(data) {
+    // Delete 'show' class from all modals
+    function hideAllModals() {
+        var modalsLength = modals.length;
+        for(var i = 0; i < modalsLength; i++){
+            modals[i].classList.remove('show');
+        }
+    }   
+    
+    // Delete 'show' class from overlay
+    function hideOverlay() {
+        modalOverlay.classList.remove('show');
+    };
+    
+    function createTable(data) {
         tableBodyDiv.innerHTML = ''; // reset table
+        // Creating row for each round
         for (var i = 0; i < data.length; i++) {
-            tableBodyDiv.innerHTML +=
-                '<tr>' +
-                    '<td>' + data[i].round + '</td>' +
-                    '<td><i class="fas fa-hand-' + data[i].playerItem.toLowerCase() + '"></i></td>' +
-                    '<td><i class="fas fa-hand-' + data[i].computerItem.toLowerCase() + '"></i></td>' +
-                    '<td>' + data[i].roundResult.slice(0,1).toUpperCase() + '</td>' +
-                    '<td>' + data[i].playerResult + ' - ' + data[i].computerResult + '</td>' +
-                '</tr>';
+            var newRow = tableBodyDiv.insertRow(i);
+
+            // Create cells for params of each round
+            var cells = [
+                data[i].round, 
+                drawIcon(data[i].playerItem),
+                drawIcon(data[i].computerItem),
+                data[i].roundResult.slice(0,1).toUpperCase(),
+                data[i].playerResult + ' - ' + data[i].computerResult            
+            ];
+            var cellsLength = cells.length;
+            for(var j = 0; j < cellsLength; j++) {
+                var newCell = newRow.insertCell(-1);
+                var newCellContent = cells[j];
+                newCell.innerHTML = newCellContent;
+            }
         }
     };
 
     // EVENT LISTENERS
+
     // Event listener for new game
     newGameButton.addEventListener('click', function() {
         showModal(modalInput);
     });
+
+    // Event listener for submit user input
+    submitButton.addEventListener('click', function(){
+        event.preventDefault();
+        submitUserInput();
+        hideOverlay();
+        newGame();
+        enableButtons();
+    });    
+
     // Event listeners for player move buttons
     for (var n = 0; n < playerMoveButtons.length; n++){
         playerMoveButtons[n].addEventListener('click', function(){ 
@@ -255,30 +284,20 @@
     };
     // Event listener for play again
     playAgainButton.addEventListener('click', function(){
-        hideAll();
+        hideOverlay();
         newGame();
     });
+
     // Event listeners for hiding modals
     for(var i = 0; i < closeButtons.length; i++){
-		closeButtons[i].addEventListener('click', hideModal);
+		closeButtons[i].addEventListener('click', hideOverlay);
     }
-    document.querySelector('#modal-overlay').addEventListener('click', hideModal);
+    modalOverlay.addEventListener('click', hideOverlay);
 
     for(var i = 0; i < modals.length; i++){
 		modals[i].addEventListener('click', function(event){
 			event.stopPropagation();
 		});
     }
-    // Event listener for submit user input
-    submitButton.addEventListener('click', function(){
-        event.preventDefault();
-        newGame();
-        submitUserInput();
-        debugger;
-        hideAll();
-        debugger;
-        enableButtons();
-        debugger;   
-    });
 
-})(); 
+// })(); 
