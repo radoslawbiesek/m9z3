@@ -82,7 +82,10 @@
     // Submit
     function submitUserInput() {
         parameters.playerName = playerNameInput.value;
-        parameters.roundsToWin = parseInt(roundsToWinInput.value);
+	    
+	var roundsToWinInputValue = parseInt(roundsToWinInput.value);
+	parameters.roundsToWin = roundsToWinInputValue > 0 ? roundsToWinInputValue : 1;
+	    
         gameLogDiv.innerHTML = 'New game. You play up to ' + parameters.roundsToWin + ' wins. Let\'s get started!';
         roundsInfoDiv.innerText = 'You need to beat the computer ' + parameters.roundsToWin + ' times to win the whole game.';
         playerNameDiv.innerText = parameters.playerName;
